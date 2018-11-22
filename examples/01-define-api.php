@@ -1,0 +1,25 @@
+<?php
+
+require_once '../vendor/autoload.php';
+
+$loop = \React\EventLoop\Factory::create();
+
+$server = new \Legionth\React\Http\Rest\Server();
+
+$server->get('/say/hello', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next) {
+    return new \React\Http\Response(200, array(), 'hello');
+});
+
+$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next) {
+    $word = $request->getQueryParams()['word'];
+
+    return new \React\Http\Response(200, array(), 'You said: ' . $word);
+});
+
+$socket = new \React\Socket\Server(isset($argv[1]) ? $argv[1] : '0.0.0.0:0', $loop);
+
+$server->listen($socket);
+
+echo 'Listening on ' . str_replace('tcp:', 'http:', $socket->getAddress()) . PHP_EOL;
+
+$loop->run();
