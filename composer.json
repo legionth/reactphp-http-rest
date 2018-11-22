@@ -1,0 +1,20 @@
+{
+    "name": "legionth/http-rest",
+    "description": "REST HTTP-Server on top of ReactPHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Theen",
+            "email": "werwofl@googlemail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Legionth\\React\\Http\\Rest\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Tests\\Legionth\\React\\Http\\Rest\\": "tests/" }
+    },
+    "require": {
+        "react/http": "^0.8.3"
+    }
+}
