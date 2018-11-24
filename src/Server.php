@@ -4,6 +4,7 @@ namespace Legionth\React\Http\Rest;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use React\Socket\ServerInterface;
 use RingCentral\Psr7\Response;
 
 class Server
@@ -13,7 +14,10 @@ class Server
      */
     private $functions;
 
-    public function listen(\React\Socket\Server $socket)
+    /**
+     * @param ServerInterface $socket
+     */
+    public function listen(ServerInterface $socket)
     {
         $middleWareFunctions = array();
 
@@ -60,11 +64,6 @@ class Server
     public function options(string $path, callable $callable)
     {
         $this->functions['options'][$path] = $callable;
-    }
-
-    public function connect(string $path, callable $callable)
-    {
-        $this->functions['connect'][$path] = $callable;
     }
 
     public function trace(string $path, callable $callable)
