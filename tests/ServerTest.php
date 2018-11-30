@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Legionth\React\Http\Rest;
+
 use Legionth\React\Http\Rest\Server;
 use Psr\Http\Message\ServerRequestInterface;
 

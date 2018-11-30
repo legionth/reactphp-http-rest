@@ -1,0 +1,23 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+dist: trusty
+
+matrix:
+  include:
+    - php: 7.0
+      env:
+        - DEPENDENCIES=lowest
+
+sudo: false
+
+install:
+  - composer install --no-interaction
+  - if [ "$DEPENDENCIES" = "lowest" ]; then composer update --prefer-lowest -n; fi
+
+script:
+  - ./vendor/bin/phpunit --coverage-text
