@@ -2,6 +2,15 @@
 
 Creating [ReactPHP HTTP Server](https://github.com/reactphp/http) but with REST
 
+
+**Table of Contents**
+* [Example](#example)
+* [Usage](#usage)
+  * [Server](#server)
+  * [Dynamic Values](#dynamic-values)
+* [Install](#install)
+* [License](#license)
+
 ## Example
 
 This is an HTTP server which responds with an `hello`
@@ -43,6 +52,26 @@ Every endpoint is added as a middleware, therefor a request will pass every func
 sequentially.
 The second parameter (defined as `$next` in these examples) can be used to pass
 the request to following endpoint.
+
+### Dynamic Values
+
+To add dynamic values in the REST API definition the operator `:` can be used
+
+```php
+$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next) {
+    $word = $request->getQueryParams()['word'];
+
+    return new \React\Http\Response(200, array(), 'You said: ' . $word);
+});
+```
+
+Now a HTTP client can call the address e.g. `http://localhost:8080/say/hello`.
+The key `word` and value `hello` will be stored in query parameters of the
+PSR-7 request.
+
+There is no type check her that can validate which API should be used.
+`/say/:word` and`/say/:number` would be the same. In this case the order of your API
+definition matters.
 
 ## Install
 
