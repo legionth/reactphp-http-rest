@@ -203,4 +203,52 @@ class ServerTest extends TestCase
         $this->assertSame('/something/api', $requestAssertion->getUri()->getPath());
         $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
     }
+
+    public function testUserDefinedCallbackIsUsed()
+    {
+        $requestAssertion = null;
+        $server = new Server();
+
+        $server->get('/user/list', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $server->listen($this->socket, function (ServerRequestInterface $request) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $this->socket->emit('connection', array($this->connection));
+        $this->connection->emit('data', array("GET http://example.com/user/add HTTP/1.0\r\n\r\n"));
+
+        $this->assertInstanceOf('RingCentral\Psr7\Request', $requestAssertion);
+        $this->assertSame('GET', $requestAssertion->getMethod());
+        $this->assertSame('http://example.com/user/add', $requestAssertion->getRequestTarget());
+        $this->assertEquals('http://example.com/user/add', $requestAssertion->getUri());
+        $this->assertSame('/user/add', $requestAssertion->getUri()->getPath());
+        $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
+    }
+
+    public function testUserDefinedCallbackIsNotUsed()
+    {
+        $requestAssertion = null;
+        $server = new Server();
+
+        $server->get('/user/list', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $server->listen($this->socket, function (ServerRequestInterface $request) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $this->socket->emit('connection', array($this->connection));
+        $this->connection->emit('data', array("GET http://example.com/user/list HTTP/1.0\r\n\r\n"));
+
+        $this->assertInstanceOf('RingCentral\Psr7\Request', $requestAssertion);
+        $this->assertSame('GET', $requestAssertion->getMethod());
+        $this->assertSame('http://example.com/user/list', $requestAssertion->getRequestTarget());
+        $this->assertEquals('http://example.com/user/list', $requestAssertion->getUri());
+        $this->assertSame('/user/list', $requestAssertion->getUri()->getPath());
+        $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
+    }
 }
