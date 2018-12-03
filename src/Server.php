@@ -90,7 +90,16 @@ class Server
                 $requestPathArray = explode('/', $requestPath);
                 $pathArray = explode('/', $path);
 
-                if (count($requestPathArray) !== count($pathArray)) {
+                $countRequestPathEntries = count($requestPathArray);
+                if ($countRequestPathEntries !== count($pathArray)) {
+                    return $next($request);
+                }
+
+                if ($requestPath === $path) {
+                    return $function($request, $next);
+                }
+
+                if (false === strpos($path, ':')) {
                     return $next($request);
                 }
 

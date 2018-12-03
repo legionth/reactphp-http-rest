@@ -251,4 +251,23 @@ class ServerTest extends TestCase
         $this->assertSame('/user/list', $requestAssertion->getUri()->getPath());
         $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
     }
+
+    public function testNoSuchCallDefinedResultInNeverCalled()
+    {
+        $requestAssertion = null;
+        $server = new Server();
+
+        $server->get('/user/anotherlist', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $server->get('/user/list', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion) {
+            $requestAssertion = $request;
+        });
+
+        $this->socket->emit('connection', array($this->connection));
+        $this->connection->emit('data', array("GET http://example.com/user/anotherlista HTTP/1.0\r\n\r\n"));
+
+        $this->assertSame(null, $requestAssertion);
+    }
 }
