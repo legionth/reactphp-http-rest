@@ -16,8 +16,9 @@ class Server
 
     /**
      * @param ServerInterface $socket
+     * @param callable|null $callback
      */
-    public function listen(ServerInterface $socket)
+    public function listen(ServerInterface $socket, callable $callback = null)
     {
         $middleWareFunctions = array();
 
@@ -27,9 +28,13 @@ class Server
             }
         }
 
-        $middleWareFunctions[] = function (ServerRequestInterface $request) {
-            return new Response(404);
-        };
+        if (null === $callback) {
+            $callback = function (ServerRequestInterface $request) {
+                return new Response(404);
+            };
+        }
+
+        $middleWareFunctions[] = $callback;
 
         $httpServer = new \React\Http\Server($middleWareFunctions);
 

@@ -8,6 +8,7 @@ Creating [ReactPHP HTTP Server](https://github.com/reactphp/http) but with REST
 * [Usage](#usage)
   * [Server](#server)
   * [Dynamic Values](#dynamic-values)
+  * [Default Callback](#default-callback)
 * [Install](#install)
 * [License](#license)
 
@@ -72,6 +73,13 @@ PSR-7 request.
 There is no type check her that can validate which API should be used.
 `/say/:word` and`/say/:number` would be the same. In this case the order of your API
 definition matters.
+
+### Default Callback
+
+A default callback can be defined in the `listen` method.
+This method will be used if no definition can be found.
+
+By default this library will respond with an `404` HTTP response.
 
 ## Install
 
