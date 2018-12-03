@@ -89,7 +89,7 @@ The recommended way to install this library is [through Composer](https://getcom
 This will install the latest supported version:
 
 ```bash
-$ composer require legionth/http-rest:^0.1
+$ composer require legionth/http-rest:^0.2
 ```
 
 ## License
