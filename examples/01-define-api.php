@@ -10,8 +10,8 @@ $server->get('/say/hello', function (\Psr\Http\Message\ServerRequestInterface $r
     return new \React\Http\Response(200, array(), 'hello');
 });
 
-$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next) {
-    $word = $request->getQueryParams()['word'];
+$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next, array $arguments) {
+    $word = $arguments['word'];
 
     return new \React\Http\Response(200, array(), 'You said: ' . $word);
 });

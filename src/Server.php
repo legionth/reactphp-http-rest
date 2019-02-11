@@ -103,19 +103,17 @@ class Server
                     return $next($request);
                 }
 
-                $queryParams = $request->getQueryParams();
+                $argument = array();
 
                 foreach ($pathArray as $id => $valueName) {
                     $position = strpos($valueName, ':');
                     if (0 === $position) {
                         $valueName = substr($valueName, 1);
-                        $queryParams[$valueName] = $requestPathArray[$id];
+                        $argument[$valueName] = $requestPathArray[$id];
                     }
                 }
 
-                $request = $request->withQueryParams($queryParams);
-
-                return $function($request, $next);
+                return $function($request, $next, $argument);
             }
 
             return $next($request);
