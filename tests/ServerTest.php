@@ -59,16 +59,16 @@ class ServerTest extends TestCase
         $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
     }
 
-    public function testCreatePostEndpointOnTestServerAndSendRequestWithQueryParameter()
+    public function testCreatePostEndpointOnTestServerAndSendRequestWithAdditionalParameter()
     {
         $requestAssertion = null;
         $idAssertion = null;
 
         $server = new Server();
 
-        $server->post('/user/add/:id', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion, &$idAssertion) {
+        $server->post('/user/add/:id', function (ServerRequestInterface $request, callable $next, array $paramters) use (&$requestAssertion, &$idAssertion) {
             $requestAssertion = $request;
-            $idAssertion = $request->getQueryParams()['id'];
+            $idAssertion = $paramters['id'];
         });
 
         $server->listen($this->socket);
@@ -86,7 +86,7 @@ class ServerTest extends TestCase
         $this->assertEquals('10', $idAssertion);
     }
 
-    public function testCreatePutEndpointOnTestServerAndSendRequestWithQueryParameters()
+    public function testCreatePutEndpointOnTestServerAndSendRequestWithParameters()
     {
         $requestAssertion = null;
         $idAssertion = null;
@@ -94,10 +94,10 @@ class ServerTest extends TestCase
 
         $server = new Server();
 
-        $server->put('/user/add/:id/group/:name', function (ServerRequestInterface $request, callable $next) use (&$requestAssertion, &$idAssertion, &$nameAssertion) {
+        $server->put('/user/add/:id/group/:name', function (ServerRequestInterface $request, callable $next, array $parameters) use (&$requestAssertion, &$idAssertion, &$nameAssertion) {
             $requestAssertion = $request;
-            $idAssertion = $request->getQueryParams()['id'];
-            $nameAssertion = $request->getQueryParams()['name'];
+            $idAssertion = $parameters['id'];
+            $nameAssertion = $parameters['name'];
         });
 
         $server->listen($this->socket);
