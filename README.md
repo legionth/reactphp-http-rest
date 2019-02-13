@@ -59,16 +59,16 @@ the request to following endpoint.
 To add dynamic values in the REST API definition the operator `:` can be used
 
 ```php
-$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next, array $arguments) {
-    $word = $arguments['word'];
+$server->post('/say/:word', function (\Psr\Http\Message\ServerRequestInterface $request, callable $next, array $parameters) {
+    $word = $parameters['word'];
 
     return new \React\Http\Response(200, array(), 'You said: ' . $word);
 });
 ```
 
 Now a HTTP client can call the address e.g. `http://localhost:8080/say/hello`.
-The key `word` and value `hello` will be stored in query parameters of the
-PSR-7 request.
+The key `word` and value `hello` will be stored in the third
+parameter of the callback function.
 
 There is no type check her that can validate which API should be used.
 `/say/:word` and`/say/:number` would be the same. In this case the order of your API
