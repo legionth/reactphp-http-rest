@@ -31,7 +31,7 @@ class SquareBracketsStrategyTest extends TestCase
 
     public function testNothingWillBeExtractedBecauseBracketIsNotComplete()
     {
-        $colonStrategy = new CurlyBrackets();
+        $colonStrategy = new SquareBrackets();
         $pathArray = array('say', '[word');
         $requestArray = array('say', 'hello');
 
