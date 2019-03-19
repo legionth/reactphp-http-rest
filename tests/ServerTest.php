@@ -2,6 +2,7 @@
 
 namespace Tests\Legionth\React\Http\Rest;
 
+use Legionth\React\Http\Rest\Paramaters\Label\CurlyBrackets;
 use Legionth\React\Http\Rest\Server;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -269,5 +270,35 @@ class ServerTest extends TestCase
         $this->connection->emit('data', array("GET http://example.com/user/anotherlista HTTP/1.0\r\n\r\n"));
 
         $this->assertSame(null, $requestAssertion);
+    }
+
+    public function testApiWithCurlyBracketsCanExtractParamters()
+    {
+        $requestAssertion = null;
+        $idAssertion = null;
+        $nameAssertion = null;
+
+        $server = new Server();
+
+        $server->put('/user/add/{id}/group/{name}', function (ServerRequestInterface $request, callable $next, array $parameters) use (&$requestAssertion, &$idAssertion, &$nameAssertion) {
+            $requestAssertion = $request;
+            $idAssertion = $parameters['id'];
+            $nameAssertion = $parameters['name'];
+        });
+
+        $server->listen($this->socket, null, new CurlyBrackets());
+
+        $this->socket->emit('connection', array($this->connection));
+        $this->connection->emit('data', array("PUT http://example.com/user/add/10/group/reactphp HTTP/1.0\r\n\r\n"));
+
+        $this->assertInstanceOf('RingCentral\Psr7\Request', $requestAssertion);
+        $this->assertSame('PUT', $requestAssertion->getMethod());
+        $this->assertSame('http://example.com/user/add/10/group/reactphp', $requestAssertion->getRequestTarget());
+        $this->assertEquals('http://example.com/user/add/10/group/reactphp', $requestAssertion->getUri());
+        $this->assertSame('/user/add/10/group/reactphp', $requestAssertion->getUri()->getPath());
+        $this->assertSame('example.com', $requestAssertion->getHeaderLine('Host'));
+
+        $this->assertEquals('10', $idAssertion);
+        $this->assertEquals('reactphp', $nameAssertion);
     }
 }
