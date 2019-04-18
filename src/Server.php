@@ -2,6 +2,8 @@
 
 namespace Legionth\React\Http\Rest;
 
+use Legionth\React\Http\Rest\Paramaters\Label\Colon;
+use Legionth\React\Http\Rest\Paramaters\Label\Strategy;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Socket\ServerInterface;
@@ -9,18 +11,35 @@ use RingCentral\Psr7\Response;
 
 class Server
 {
+
+    const DOUBLE_POINT = ':';
+    const CURLY_BRACKETS = '{}';
+    const SQUARE_BRACKETS = '[]';
+
     /**
      * @var array
      */
     private $functions;
 
     /**
+     * @var Strategy
+     */
+    private $strategy;
+
+    /**
      * @param ServerInterface $socket
      * @param callable|null $callback
+     * @param string $strategy
      */
-    public function listen(ServerInterface $socket, callable $callback = null)
+    public function listen(ServerInterface $socket, callable $callback = null, Strategy $strategy = null)
     {
         $middleWareFunctions = array();
+
+        if ($strategy === null) {
+            $strategy = new Colon();
+        }
+
+        $this->strategy = $strategy;
 
         foreach ($this->functions as $httpMethod => $pathFunctionArray) {
             foreach ($pathFunctionArray as $path => $function) {
@@ -99,19 +118,11 @@ class Server
                     return $function($request, $next);
                 }
 
-                if (false === strpos($path, ':')) {
+                if (false === strpos($path, $this->strategy->getFirstIdentifier())) {
                     return $next($request);
                 }
 
-                $argument = array();
-
-                foreach ($pathArray as $id => $valueName) {
-                    $position = strpos($valueName, ':');
-                    if (0 === $position) {
-                        $valueName = substr($valueName, 1);
-                        $argument[$valueName] = $requestPathArray[$id];
-                    }
-                }
+                $argument = $this->strategy->extractParametersFromPath($pathArray, $requestPathArray);
 
                 return $function($request, $next, $argument);
             }

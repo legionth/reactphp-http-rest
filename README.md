@@ -9,6 +9,7 @@ Creating [ReactPHP HTTP Server](https://github.com/reactphp/http) but with REST
   * [Server](#server)
   * [Dynamic Values](#dynamic-values)
   * [Default Callback](#default-callback)
+  * [Parameter Placeholder](#parameter-placholder)
 * [Install](#install)
 * [License](#license)
 
@@ -80,6 +81,19 @@ A default callback can be defined in the `listen` method.
 This method will be used if no definition can be found.
 
 By default this library will respond with an `404` HTTP response.
+
+### Parameter Placeholder
+
+As seen in the previous chapter you can use the `:` to mark
+dynamic values.
+Instead of using this strategy, to mark dynamic parameters,
+this library supports additional strategies via different classes:
+
+* `/to/path/:paramter` - `Legionth\React\Http\Rest\Paramaters\Label\Colon`
+* `/to/path/[paramter]` - `Legionth\React\Http\Rest\Paramaters\Label\CurlyBracket`
+* `/to/path/{paramter}` - `Legionth\React\Http\Rest\Paramaters\Label\SquareBrackets` 
+
+Checkout the examples for more information.
 
 ## Install
 
