@@ -60,36 +60,71 @@ class Server
         $httpServer->listen($socket);
     }
 
+    /**
+     * Add a callback to the to be added path for the GET method
+     * @param string $path
+     * @param callable $callable
+     */
     public function get(string $path, callable $callable)
     {
         $this->functions['get'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the POST method
+     * @param string $path
+     * @param callable $callable
+     */
     public function post(string $path, callable $callable)
     {
         $this->functions['post'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the PUT method
+     * @param string $path
+     * @param callable $callable
+     */
     public function put(string $path, callable $callable)
     {
         $this->functions['put'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the DELETE method
+     * @param string $path
+     * @param callable $callable
+     */
     public function delete(string $path, callable $callable)
     {
         $this->functions['delete'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the HEAD method
+     * @param string $path
+     * @param callable $callable
+     */
     public function head(string $path, callable $callable)
     {
         $this->functions['head'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the OPTIONS method
+     * @param string $path
+     * @param callable $callable
+     */
     public function options(string $path, callable $callable)
     {
         $this->functions['options'][$path] = $callable;
     }
 
+    /**
+     * Add a callback to the to be added path for the TRACE method
+     * @param string $path
+     * @param callable $callable
+     */
     public function trace(string $path, callable $callable)
     {
         $this->functions['trace'][$path] = $callable;
