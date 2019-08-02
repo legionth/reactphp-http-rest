@@ -29,7 +29,7 @@ class Server
     /**
      * @param ServerInterface $socket
      * @param callable|null $callback
-     * @param string $strategy
+     * @param Strategy|string $strategy
      */
     public function listen(ServerInterface $socket, callable $callback = null, Strategy $strategy = null)
     {
